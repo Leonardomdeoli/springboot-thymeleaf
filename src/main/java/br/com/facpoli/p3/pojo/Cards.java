@@ -10,22 +10,23 @@ public class Cards {
 	@JsonProperty("foreignNames")
 	private List<ForeignNames> foreignNames = new ArrayList<ForeignNames>();
 	private String name;
-	private String manacost;
+	private String manaCost;
 	private String rarity;
 	private String imageUrl;
 	private String power;
 	private String toughness;
 	private String cmc;
-	private String imgpoder;
+	private String  imgpoder;
 
 	public String getImgpoder() {
 
-		String aux = getManacost();
-		imgpoder = "U.jpg";
+		String aux = getmanaCost();
+		imgpoder = "X.jpg";
 		if( aux != null){
-			for (String aux2 : aux.split("{")) {
+			for (String aux2 : aux.split("}")) {
+				aux2 = aux2.replace("{","");
 				if(!isNumber(aux2)){
-					imgpoder = aux2.replace("}",".jpg");
+					imgpoder = aux2 + ".jpg";
 					
 				}else{
 					setCmc(aux2);
@@ -51,12 +52,12 @@ public class Cards {
 		return getPower() + "/" + getToughness();
 	}
 
-	public String getManacost() {
-		return manacost;
+	public String getmanaCost() {
+		return manaCost;
 	}
 
-	public void setManacost(String manacost) {
-		this.manacost = manacost;
+	public void setmanaCost(String manaCost) {
+		this.manaCost = manaCost;
 	}
 
 	public String getCmc() {
