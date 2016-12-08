@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: magic
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: leonardo
+Implementation-Vendor-Id: br.com.facpoli.p3
+Build-Jdk: 1.8.0_101
+Implementation-URL: http://projects.spring.io/spring-boot/magic/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
