@@ -2,7 +2,6 @@ package br.com.facpoli.p3.controller;
 
 import java.util.List;
 
-import org.h2.util.New;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,38 +27,32 @@ public class CardsController {
 
 	@GetMapping("/")
 	public String home(Model model) {
-		model.addAttribute("carta", new Personagem());
 		model.addAttribute("cards", personagemRepository.findAll());
 		return "home";
 	}
 
-	@GetMapping("/admin")
+	@GetMapping("/login")
 	public String logar() {
 		return "login";
 	}
-	
-	
-	@GetMapping("/buscar")
-	public String buscar(@RequestParam String nome, Model model) {
-		
-		model.addAttribute("carta", new Personagem());
-		model.addAttribute("cards", personagemRepository.findByNomeContainingIgnoreCase(nome));
-		
-		return "home";
+
+	@GetMapping("/admin")
+	public String importCard(Model model) {
+		return "buscar";
 	}
 
 	@GetMapping("/import")
-	public String importCards(Model model) {
+	public String importCards(@RequestParam String url, Model model) {
 
-		CardsResponse cardsResponse = getCards();
+		CardsResponse cardsResponse = getCards(url);
 
 		List<Cards> cards = cardsResponse.getCards();
 		for (Cards card : cards) {
-				
-			List<ForeignNames> foreignNames =  card.getForeignNames();
-			
+
+			List<ForeignNames> foreignNames = card.getForeignNames();
+
 			for (ForeignNames fore : foreignNames) {
-				if("Portuguese (Brazil)".equals(fore.getLanguage())){
+				if ("Portuguese (Brazil)".equals(fore.getLanguage())) {
 					personagemRepository.save(new Personagem(card));
 					break;
 				}
@@ -68,15 +61,25 @@ public class CardsController {
 		return "redirect:/";
 	}
 
-	public CardsResponse getCards() {
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
-		HttpEntity<CardsResponse> entity = new HttpEntity<CardsResponse>(headers);
-		ResponseEntity<CardsResponse> res = new RestTemplate().exchange(
-				"https://api.magicthegathering.io/v1/cards?set=ROE", HttpMethod.GET, entity, CardsResponse.class);
-
-		return res.getBody();
+	@GetMapping("/buscar")
+	public String buscar(@RequestParam String nome, Model model) {
+		model.addAttribute("cards", personagemRepository.findByNomeContainingIgnoreCase(nome));
+		return "home";
 	}
 
+	public CardsResponse getCards(String url) {
+
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
+			HttpEntity<CardsResponse> entity = new HttpEntity<CardsResponse>(headers);
+			ResponseEntity<CardsResponse> res = new RestTemplate().exchange(url, HttpMethod.GET, entity,
+					CardsResponse.class);
+
+			return res.getBody();
+
+		} catch (Exception e) {
+			return new CardsResponse();
+		}
+	}
 }

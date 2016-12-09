@@ -35,7 +35,7 @@ public class Cards {
 		}
 		return "/img/" + imgpoder;
 	}
-
+// {1}{U}{U}{X}
 	public void setImgpoder(String imgpoder) {
 		this.imgpoder = imgpoder;
 	}
